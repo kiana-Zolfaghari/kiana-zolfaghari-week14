@@ -1,35 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Home from "./home";
+import AboutUs from "./About us";
+import Login from "./Login";
+import Contact from "./Contact";
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [showHome, setShowHome] = useState(false);
+  const [showAboutUs, setshowAboutUs] = useState(false);
+  const [showContact, setshowContact] = useState(false);
+  const [showLogin, setshowLogin] = useState(false);
+  console.log(showHome);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <h1 className="title" style={{ color: "black" }}>
+        tabs component with react
+      </h1>
+      <ul
+        style={{
+          listStyle: "none",
+          color: "black",
+          justifyContent: "spaceBetween",
+          display: "flex",
+          gap: "5rem",
+          marginTop: "8rem",
+        }}
+      >
+        <button
+          onClick={() => setShowHome((s) => !s)}
+          style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
+        >
+          <li
+            style={{ fontWeight: "800", fontSize: "1.5rem", cursor: "pointer" }}
+          >
+            home
+          </li>
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <button
+          onClick={() => setshowAboutUs((s) => !s)}
+          style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
+        >
+          <li
+            style={{ fontWeight: "800", fontSize: "1.5rem", cursor: "pointer" }}
+          >
+            about us
+          </li>
+        </button>
+        <button
+          onClick={() => setshowContact((s) => !s)}
+          style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
+        >
+          <li
+            style={{ fontWeight: "800", fontSize: "1.5rem", cursor: "pointer" }}
+          >
+            contact
+          </li>
+        </button>
+        <button
+          onClick={() => setshowLogin((s) => !s)}
+          style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
+        >
+          <li
+            style={{ fontWeight: "800", fontSize: "1.5rem", cursor: "pointer" }}
+          >
+            login
+          </li>
+        </button>
+      </ul>
+      <div>{showHome && <Home />}</div>
+      <div>{showContact && <Contact />}</div>
+      <div>{showAboutUs && <AboutUs />}</div>
+      <div>{showLogin && <Login />}</div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
