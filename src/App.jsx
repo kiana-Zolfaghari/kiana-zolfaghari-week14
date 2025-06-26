@@ -5,11 +5,7 @@ import Contact from "./Contact";
 import { useState } from "react";
 
 function App() {
-  const [showHome, setShowHome] = useState(false);
-  const [showAboutUs, setshowAboutUs] = useState(false);
-  const [showContact, setshowContact] = useState(false);
-  const [showLogin, setshowLogin] = useState(false);
-  console.log(showHome);
+  const [activeTab, setActiveTab] = useState("home");
 
   return (
     <>
@@ -27,7 +23,7 @@ function App() {
         }}
       >
         <button
-          onClick={() => setShowHome((s) => !s)}
+          onClick={() => setActiveTab("home")}
           style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
         >
           <li
@@ -37,7 +33,7 @@ function App() {
           </li>
         </button>
         <button
-          onClick={() => setshowAboutUs((s) => !s)}
+          onClick={() => setActiveTab("about")}
           style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
         >
           <li
@@ -47,7 +43,7 @@ function App() {
           </li>
         </button>
         <button
-          onClick={() => setshowContact((s) => !s)}
+          onClick={() => setActiveTab("contact")}
           style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
         >
           <li
@@ -57,7 +53,7 @@ function App() {
           </li>
         </button>
         <button
-          onClick={() => setshowLogin((s) => !s)}
+          onClick={() => setActiveTab("login")}
           style={{ backgroundColor: "#ffe713", border: "none", color: "black" }}
         >
           <li
@@ -67,10 +63,13 @@ function App() {
           </li>
         </button>
       </ul>
-      <div>{showHome && <Home />}</div>
-      <div>{showContact && <Contact />}</div>
-      <div>{showAboutUs && <AboutUs />}</div>
-      <div>{showLogin && <Login />}</div>
+
+      <div style={{ marginTop: "2rem" }}>
+        {activeTab === "home" && <Home />}
+        {activeTab === "about" && <AboutUs />}
+        {activeTab === "contact" && <Contact />}
+        {activeTab === "login" && <Login />}
+      </div>
     </>
   );
 }
