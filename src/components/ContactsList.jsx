@@ -1,28 +1,45 @@
-function ContactsList({ contacts, deleteHandeler,editHandeler }) {
+import { RiEdit2Fill } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
+import styles from "./ContactList.module.css";
+
+function ContactsList({ contacts, deleteHandeler, editHandeler }) {
   return (
     <>
-      <h3>Contact List</h3>
+      <h3 className={styles.title}>Contact List</h3>
       {contacts.length ? (
-        <ul>
+        <ul className={styles.listContainer}>
           {contacts.map((i) => (
-            <li key={i.id}>
-              <p>
+            <li key={i.id} className={styles.List}>
+              <p className={styles.name}>
                 {i.name} {i.lastName}{" "}
               </p>
-              <p>
+              <p className={styles.email}>
                 <span>📫</span> {i.email}
               </p>
-              <p>
+              <p className={styles.phone}>
                 <span>📞</span>
                 {i.phone}
               </p>
-              <button onClick={() => deleteHandeler(i.id)}>🗑️</button>
-              <button onClick={()=>editHandeler(i.id)}>Edit</button>
+              <div className={styles.btn}>
+              <button
+                onClick={() => deleteHandeler(i.id)}
+                className={styles.delete}
+              >
+                <MdDelete />
+              </button>
+              <button
+                onClick={() => editHandeler(i.id)}
+                className={styles.edit}
+                id={styles.btn}
+              >
+                <RiEdit2Fill />
+              </button>
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p>NO Contact yet</p>
+        <p className={styles.noContact}>NO Contact yet</p>
       )}
     </>
   );

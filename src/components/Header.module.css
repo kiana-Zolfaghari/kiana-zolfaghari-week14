@@ -1,4 +1,9 @@
 .container{
-    color: rgb(14, 130, 255);
-    font-size: 3rem;
+    width: 100%;
+    background-color: #800080;
+    color: #ffffff;
+    font-size: 2.5rem;
+    margin-top: -0.25rem;
+    padding: 1rem;
+    border-radius: 10px;
 }

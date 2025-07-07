@@ -8,12 +8,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
+
 .dialog {
+  flex-direction: column;
   background: #fff;
-  width: 40rem;
-  height: 20rem;
+  width: 28rem;
+  height: 27rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   text-align: center;
+  z-index: 1001;
+  position: relative;
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 2rem;
+}
+
+.inputGroup input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #820082;
+  border-radius: 5px;
+}
+.dialogOverlay button {
+  border: none;
+  width: 5rem;
+  height: 2rem;
+  border-radius: 20px;
+  background-color: #d053d0;
+  color: #ffffff;
+  font-size: 10px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.dialogOverlay button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #d053d0;
+}
+
+.dialogOverlay h1{
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #820082; 
+  padding: 22px 10px;
+  margin-top: 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
