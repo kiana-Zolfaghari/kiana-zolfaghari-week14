@@ -1,3 +1,13 @@
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 .dialogOverlay {
   position: fixed;
   top: 0;
@@ -21,6 +31,7 @@
   text-align: center;
   z-index: 1001;
   position: relative;
+  animation: slideUp 0.4s ease-out;
 }
 .inputGroup {
   display: flex;
