@@ -4,6 +4,7 @@ import ContactsList from "./ContactsList";
 import "./style.css";
 import styles from "./Contacts.module.css";
 
+
 const inputs = [
   { type: "Text", name: "name", placeholder: "name" },
   { type: "Text", name: "lastName", placeholder: "LastName" },
@@ -85,6 +86,7 @@ function Contacts() {
 
   return (
     <>
+ 
       <div className={styles.btnContainer}>
         <button onClick={() => setShowDialog(true)} className={styles.addBtn}>
           Add
@@ -127,6 +129,7 @@ function Contacts() {
         contacts={contacts}
         deleteHandeler={deleteHandeler}
         editHandeler={editHandeler}
+        setContacts={setContacts}
       />
     </>
   );

@@ -1,10 +1,15 @@
 import { RiEdit2Fill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import styles from "./ContactList.module.css";
+import Search from "./Search";
+import { useState } from "react";
 
-function ContactsList({ contacts, deleteHandeler, editHandeler }) {
+
+function ContactsList({ contacts, deleteHandeler, editHandeler,setContacts }) {
+  const [newList,setNewList]=useState(contacts)
   return (
     <>
+    <Search contacts={contacts} setContacts={setNewList}/>
       <h3 className={styles.title}>Contact List</h3>
       {contacts.length ? (
         <ul className={styles.listContainer}>
