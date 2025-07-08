@@ -3,7 +3,7 @@ import { useState } from "react";
 import ContactsList from "./ContactsList";
 import "./style.css";
 import styles from "./Contacts.module.css";
-
+import Search from "./Search";
 
 const inputs = [
   { type: "Text", name: "name", placeholder: "name" },
@@ -22,7 +22,9 @@ function Contacts() {
     phone: "",
   });
   const [showDialog, setShowDialog] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(null);
+  const [search, setSearch] = useState("");
+  const [newList, setNewList] = useState(contacts);
 
   const change = (e) => {
     const name = e.target.name;
@@ -62,57 +64,57 @@ function Contacts() {
 
   const editHandeler = (id, e) => {
     setShowDialog(true);
-    const editContact = contacts.find((i) => {
-      return i.d === id;
-    });
+    setIsEdit(id);
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
+    setIsEdit({ ...isEdit, [name]: value });
   };
 
   const applyEdit = () => {
-    if (
-      !contact.name ||
-      !contact.lastName ||
-      !contact.email ||
-      !contact.phone
-    ) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    const updated = contacts.map((c) => (c.id === contact.id ? contact : c));
-    setContacts(updated);
+    const updatedContacts = contacts.map((c) =>
+      c.id === isEdit.id ? isEdit : c
+    );
+    setContacts(updatedContacts);
+    setIsEdit(null);
     setShowDialog(false);
   };
 
   return (
     <>
- 
+      <Search
+        search={search}
+        setSearch={setSearch}
+        setNewList={setNewList}
+        contacts={contacts}
+      />
       <div className={styles.btnContainer}>
         <button onClick={() => setShowDialog(true)} className={styles.addBtn}>
           Add
         </button>
       </div>
-        <hr />
+      <hr />
 
       {showDialog && (
         <div className="dialogOverlay">
           <div className="dialog">
             <h1>Add New Contact</h1>
-          <div className="inputGroup">
-            {inputs.map((i, ind) => (
-              <input
-                key={ind}
-                name={i.name}
-                value={contact[i.name]}
-                type={i.type}
-                placeholder={i.placeholder}
-                onChange={change}
-              />
-            ))}
+            <div className="inputGroup">
+              {inputs.map((i, ind) => (
+                <input
+                  key={ind}
+                  name={i.name}
+                  value={contact[i.name]}
+                  type={i.type}
+                  placeholder={i.placeholder}
+                  onChange={change}
+                />
+              ))}
             </div>
             <button onClick={add}>Add Contact</button>
             <button onClick={() => setShowDialog(false)}>cancel</button>
-            {/* <button onClick={applyEdit}>Edit</button> */}
+            <button onClick={applyEdit}>Edit</button>
             <div style={{ backgroundColor: "red", width: "100%" }}>
               {allert && <p>{allert}</p>}
             </div>
@@ -130,6 +132,7 @@ function Contacts() {
         deleteHandeler={deleteHandeler}
         editHandeler={editHandeler}
         setContacts={setContacts}
+        newList={newList}
       />
     </>
   );

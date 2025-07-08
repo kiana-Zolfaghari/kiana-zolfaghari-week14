@@ -1,10 +1,7 @@
-
 import Contacts from "./components/Contacts";
 import Header from "./components/header";
 
 function App() {
- 
-
   return (
     <>
       <Header />

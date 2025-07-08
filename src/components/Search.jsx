@@ -1,24 +1,34 @@
-function Search({contacts,setContacts}){
+function Search({ search, setSearch, setNewList, contacts }) {
+  const SearchData = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    if (value) {
+      const list = contacts.filter((i) => i.name.includes(value));
+      return setNewList(list);
+    } else {
+      console.log(contacts);
+      return setNewList(contacts);
+    }
+  };
 
+  return (
+    <>
+      <input
+        type="text"
+        placeholder="search..."
+        style={{
+          border: "none",
+          width: "30%",
+          height: "2rem",
+          backgroundColor: "#f5f4f4",
+          borderRadius: "10px",
+          marginBottom: "2px",
+        }}
+        onChange={SearchData}
+        value={search}
+      />
+    </>
+  );
+}
 
-    const SearchData = (e)=>{
-const value = e.target.value
-console.log(value)
- const newList = contacts.filter((i)=>i.name === value)
- if(newList){
-    setContacts(newList)
- }else{
-    
-    console.log(newList)
- }
- 
-return <>
-<div>
-    <input type="text"  placeholder="search..."  style={{border:"none",width:"30%",height:"2rem",backgroundColor:"#f5f4f4",borderRadius:"10px",marginBottom:"2px"}}
-    
-    onChange={SearchData}/>
-</div>
-</>
-}}
-
-export default Search
+export default Search;
