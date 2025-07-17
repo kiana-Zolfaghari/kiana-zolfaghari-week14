@@ -2,7 +2,14 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import styles from "./ContactList.module.css";
 
-function ContactsList({ contacts, deleteHandeler, editHandeler,newList }) {
+function ContactsList({
+  contacts,
+  editHandeler,
+  newList,
+  selectedContacts,
+  toggleSelect,
+  deleted,
+}) {
   return (
     <>
       <h3 className={styles.title}>Contact List</h3>
@@ -21,10 +28,7 @@ function ContactsList({ contacts, deleteHandeler, editHandeler,newList }) {
                 {i.phone}
               </p>
               <div className={styles.btn}>
-                <button
-                  onClick={() => deleteHandeler(i.id)}
-                  className={styles.delete}
-                >
+                <button onClick={() => deleted(i.id)} className={styles.delete}>
                   <MdDelete />
                 </button>
                 <button
@@ -34,6 +38,11 @@ function ContactsList({ contacts, deleteHandeler, editHandeler,newList }) {
                 >
                   <RiEdit2Fill />
                 </button>
+                <input
+                  type="checkbox"
+                  onChange={() => toggleSelect(i.id)}
+                  checked={selectedContacts.includes(i.id)}
+                />
               </div>
             </li>
           ))}
@@ -46,3 +55,5 @@ function ContactsList({ contacts, deleteHandeler, editHandeler,newList }) {
 }
 
 export default ContactsList;
+
+// editHandeler(i.id)

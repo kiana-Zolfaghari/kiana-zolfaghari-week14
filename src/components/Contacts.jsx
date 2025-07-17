@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect, useReducer } from "react";
 import ContactsList from "./ContactsList";
 import "./style.css";
 import styles from "./Contacts.module.css";
@@ -21,10 +21,37 @@ function Contacts() {
     email: "",
     phone: "",
   });
+  const [newList, setNewList] = useState(contacts);
+
+  useEffect(() => {
+    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
+    if (savedContacts) {
+      setContacts(savedContacts);
+      setNewList(savedContacts);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
+
   const [showDialog, setShowDialog] = useState(false);
+  const [askDelete, setAskDelete] = useState(false);
+  const [showgropDeletDialog, setShowgropDeletDialog] = useState(false);
   const [isEdit, setIsEdit] = useState(null);
   const [search, setSearch] = useState("");
-  const [newList, setNewList] = useState(contacts);
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [id, setId] = useState(null);
+
+  useEffect(() => {
+    if (allert) {
+      const timer = setTimeout(() => {
+        setAllert("");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [allert]);
 
   const change = (e) => {
     const name = e.target.name;
@@ -42,7 +69,6 @@ function Contacts() {
       setAllert("Please Enter valid data");
       return;
     }
-    setAllert("");
 
     const id = Math.random() * 1000;
     const newContact = { ...contact, id: id };
@@ -55,14 +81,17 @@ function Contacts() {
       phone: "",
     });
     setShowDialog(false);
+    setAllert("Added Contact Successfully");
   };
 
   const deleteHandeler = (id) => {
     const newContac = contacts.filter((i) => i.id !== id);
     setContacts(newContac);
+    setAskDelete(false);
+    setAllert("Delete Contact Successfully");
   };
 
-  const editHandeler = (id, e) => {
+  const editHandeler = (id) => {
     setShowDialog(true);
     setIsEdit(id);
   };
@@ -79,10 +108,45 @@ function Contacts() {
     setContacts(updatedContacts);
     setIsEdit(null);
     setShowDialog(false);
+    setAllert("Edit Contact Successfully");
+  };
+
+  const toggleSelect = (id) => {
+    if (selectedContacts.includes(id)) {
+      setSelectedContacts(selectedContacts.filter((i) => i !== id));
+    } else {
+      setSelectedContacts([...selectedContacts, id]);
+    }
+  };
+
+  const deleteSelected = () => {
+    const deleted = contacts.filter((i) => !selectedContacts.includes(i.id));
+    setContacts(deleted);
+    setSelectedContacts([]);
+    setShowgropDeletDialog(false);
+    setAllert("Delete Selected Contacts Successfully");
+  };
+
+  const deleted = (id) => {
+    setAskDelete(true);
+    setId(id);
   };
 
   return (
     <>
+      <div className={styles.allertcontainer}>
+        {allert && (
+          <p
+            className={
+              allert === "Please Enter valid data"
+                ? styles.dangerallert
+                : styles.allert
+            }
+          >
+            {allert}
+          </p>
+        )}
+      </div>
       <Search
         search={search}
         setSearch={setSearch}
@@ -94,6 +158,14 @@ function Contacts() {
           Add
         </button>
       </div>
+      {selectedContacts.length > 0 && (
+        <button
+          onClick={() => setShowgropDeletDialog(true)}
+          className={styles.deleteAll}
+        >
+          Delete Selected Contacts
+        </button>
+      )}
       <hr />
 
       {showDialog && (
@@ -115,9 +187,25 @@ function Contacts() {
             <button onClick={add}>Add Contact</button>
             <button onClick={() => setShowDialog(false)}>cancel</button>
             <button onClick={applyEdit}>Edit</button>
-            <div style={{ backgroundColor: "red", width: "100%" }}>
-              {allert && <p>{allert}</p>}
-            </div>
+            <div style={{ backgroundColor: "red", width: "100%" }}></div>
+          </div>
+        </div>
+      )}
+      {askDelete && (
+        <div className="dialogOverlay1">
+          <div className="dialog1">
+            <h1>Are You sure?</h1>
+            <button onClick={() => deleteHandeler(id)}>Yes</button>
+            <button onClick={() => setAskDelete(false)}>No</button>
+          </div>
+        </div>
+      )}
+      {showgropDeletDialog && (
+        <div className="dialogOverlay1">
+          <div className="dialog1">
+            <h1>Are You sure?</h1>
+            <button onClick={deleteSelected}>Yes</button>
+            <button onClick={() => setShowgropDeletDialog(false)}>No</button>
           </div>
         </div>
       )}
@@ -133,6 +221,9 @@ function Contacts() {
         editHandeler={editHandeler}
         setContacts={setContacts}
         newList={newList}
+        toggleSelect={toggleSelect}
+        selectedContacts={selectedContacts}
+        deleted={deleted}
       />
     </>
   );

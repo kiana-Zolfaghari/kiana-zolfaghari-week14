@@ -1,14 +1,19 @@
+import { useEffect } from "react";
+
 function Search({ search, setSearch, setNewList, contacts }) {
-  const SearchData = (e) => {
-    const value = e.target.value;
-    setSearch(value);
-    if (value) {
-      const list = contacts.filter((i) => i.name.includes(value));
-      return setNewList(list);
+  useEffect(() => {
+    if (search) {
+      const list = contacts.filter((i) =>
+        i.name.includes(search)
+      );
+      setNewList(list);
     } else {
-      console.log(contacts);
-      return setNewList(contacts);
+      setNewList(contacts);
     }
+  }, [search, contacts]);
+
+  const SearchData = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
