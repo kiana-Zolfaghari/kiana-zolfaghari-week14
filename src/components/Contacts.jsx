@@ -42,6 +42,7 @@ function Contacts() {
   const [search, setSearch] = useState("");
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [id, setId] = useState(null);
+  const [showEditBtn, setShowEditBtn] = useState(false);
 
   useEffect(() => {
     if (allert) {
@@ -91,24 +92,36 @@ function Contacts() {
     setAllert("Delete Contact Successfully");
   };
 
-  const editHandeler = (id) => {
+  const editHandeler = (id, e) => {
+    const editContact = contacts.find((i) => {
+      return i.id === id;
+    });
+    setContact(editContact);
     setShowDialog(true);
-    setIsEdit(id);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setIsEdit({ ...isEdit, [name]: value });
+    setShowEditBtn(true);
   };
 
   const applyEdit = () => {
-    const updatedContacts = contacts.map((c) =>
-      c.id === isEdit.id ? isEdit : c
-    );
-    setContacts(updatedContacts);
-    setIsEdit(null);
+    if (
+      !contact.name ||
+      !contact.lastName ||
+      !contact.email ||
+      !contact.phone
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const updated = contacts.map((c) => (c.id === contact.id ? contact : c));
+    setContacts(updated);
+    setContact({
+      name: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    });
     setShowDialog(false);
-    setAllert("Edit Contact Successfully");
+    setShowEditBtn(false);
   };
 
   const toggleSelect = (id) => {
@@ -184,9 +197,9 @@ function Contacts() {
                 />
               ))}
             </div>
-            <button onClick={add}>Add Contact</button>
+            {!showEditBtn && <button onClick={add}>Add Contact</button>}
             <button onClick={() => setShowDialog(false)}>cancel</button>
-            <button onClick={applyEdit}>Edit</button>
+            {showEditBtn && <button onClick={applyEdit}>Edit</button>}
             <div style={{ backgroundColor: "red", width: "100%" }}></div>
           </div>
         </div>
