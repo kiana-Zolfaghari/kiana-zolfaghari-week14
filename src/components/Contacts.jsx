@@ -5,6 +5,16 @@ import "./style.css";
 import styles from "./Contacts.module.css";
 import Search from "./Search";
 
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+  name: yup.string().required("نام الزامی اسات"),
+  lastName: yup.string().required("نام خانوادگی الزمی است"),
+  phone: yup.string().required("شماره موبایل الزامی است"),
+  email: yup.string().email("ایمیل معتبر نیست").required("ایمیل الزامی است"),
+});
+
 const inputs = [
   { type: "Text", name: "name", placeholder: "name" },
   { type: "Text", name: "lastName", placeholder: "LastName" },
@@ -60,30 +70,30 @@ function Contacts() {
     setContact((contact) => ({ ...contact, [name]: value }));
   };
 
-  const add = () => {
-    if (
-      !contact.name ||
-      !contact.lastName ||
-      !contact.email ||
-      !contact.phone
-    ) {
-      setAllert("Please Enter valid data");
-      return;
-    }
+  // const add = () => {
+  //   if (
+  //     !contact.name ||
+  //     !contact.lastName ||
+  //     !contact.email ||
+  //     !contact.phone
+  //   ) {
+  //     setAllert("Please Enter valid data");
+  //     return;
+  //   }
 
-    const id = Math.random() * 1000;
-    const newContact = { ...contact, id: id };
-    setContacts((Contacts) => [...contacts, newContact]);
+  //   const id = Math.random() * 1000;
+  //   const newContact = { ...contact, id: id };
+  //   setContacts((Contacts) => [...contacts, newContact]);
 
-    setContact({
-      name: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
-    setShowDialog(false);
-    setAllert("Added Contact Successfully");
-  };
+  //   setContact({
+  //     name: "",
+  //     lastName: "",
+  //     email: "",
+  //     phone: "",
+  //   });
+  //   setShowDialog(false);
+  //   setAllert("Added Contact Successfully");
+  // };
 
   const deleteHandeler = (id) => {
     const newContac = contacts.filter((i) => i.id !== id);
@@ -101,28 +111,29 @@ function Contacts() {
     setShowEditBtn(true);
   };
 
-  const applyEdit = () => {
-    if (
-      !contact.name ||
-      !contact.lastName ||
-      !contact.email ||
-      !contact.phone
-    ) {
-      alert("Please fill all fields");
-      return;
-    }
+  // const applyEdit = () => {
+  //   if (
+  //     !contact.name ||
+  //     !contact.lastName ||
+  //     !contact.email ||
+  //     !contact.phone
+  //   ) {
+  //     alert("Please fill all fields");
+  //     return;
+  //   }
 
-    const updated = contacts.map((c) => (c.id === contact.id ? contact : c));
-    setContacts(updated);
-    setContact({
-      name: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
-    setShowDialog(false);
-    setShowEditBtn(false);
-  };
+  //   const updated = contacts.map((c) => (c.id === contact.id ? contact : c));
+  //   setContacts(updated);
+  //   setContact({
+  //     name: "",
+  //     lastName: "",
+  //     email: "",
+  //     phone: "",
+  //   });
+  //   setShowDialog(false);
+  //   setShowEditBtn(false);
+  //   setAllert("Edit Contact Successfully");
+  // };
 
   const toggleSelect = (id) => {
     if (selectedContacts.includes(id)) {
@@ -151,7 +162,7 @@ function Contacts() {
         {allert && (
           <p
             className={
-              allert === "Please Enter valid data"
+              allert === "Please fill all Required fields"
                 ? styles.dangerallert
                 : styles.allert
             }
@@ -180,30 +191,141 @@ function Contacts() {
         </button>
       )}
       <hr />
-
       {showDialog && (
         <div className="dialogOverlay">
           <div className="dialog">
-            <h1>Add New Contact</h1>
-            <div className="inputGroup">
-              {inputs.map((i, ind) => (
-                <input
-                  key={ind}
-                  name={i.name}
-                  value={contact[i.name]}
-                  type={i.type}
-                  placeholder={i.placeholder}
-                  onChange={change}
-                />
-              ))}
-            </div>
-            {!showEditBtn && <button onClick={add}>Add Contact</button>}
-            <button onClick={() => setShowDialog(false)}>cancel</button>
-            {showEditBtn && <button onClick={applyEdit}>Edit</button>}
-            <div style={{ backgroundColor: "red", width: "100%" }}></div>
+            <h1>{showEditBtn ? "Edit Contact" : "Add New Contact"}</h1>
+            <Formik
+              initialValues={contact}
+              enableReinitialize={true}
+              validationSchema={schema}
+              onSubmit={(values, { resetForm, setSubmitting }) => {
+                if (showEditBtn) {
+                  const updated = contacts.map((c) =>
+                    c.id === contact.id ? { ...values, id: contact.id } : c
+                  );
+                  setContacts(updated);
+                  setAllert("Edit Contact Successfully");
+                  setContact({
+                    name: "",
+                    lastName: "",
+                    email: "",
+                    phone: "",
+                  });
+                  setShowEditBtn(false);
+                } else {
+                  const id = Math.random() * 1000;
+                  const newContact = { ...values, id };
+                  setContacts([...contacts, newContact]);
+                  setAllert("Added Contact Successfully");
+                }
+
+                resetForm();
+                setContact({
+                  name: "",
+                  lastName: "",
+                  email: "",
+                  phone: "",
+                });
+                setShowDialog(false);
+              }}
+            >
+              {({
+                values,
+                handleChange,
+                handleSubmit,
+                errors,
+                setTouched,
+                touched,
+              }) => (
+                <Form
+                  className="inputGroup"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setTouched({
+                      name: true,
+                      lastName: true,
+                      email: true,
+                      phone: true,
+                    });
+                    if (Object.keys(errors).length > 0) {
+                      setAllert("Please fill all Required fields");
+                    } else {
+                      setAllert("");
+                      handleSubmit();
+                    }
+                  }}
+                >
+                  {inputs.map((i, ind) => (
+                    <div key={ind}>
+                      <Field
+                        name={i.name}
+                        type={i.type}
+                        placeholder={i.placeholder}
+                        style={
+                          errors[i.name] && touched[i.name]
+                            ? { border: "1px solid red" }
+                            : {}
+                        }
+                      />
+                      <ErrorMessage
+                        name={i.name}
+                        component="div"
+                        className="error"
+                      />
+                    </div>
+                  ))}
+                  <div className="form-actions">
+                    <button type="submit">
+                      {showEditBtn ? "Edit" : "Add Contact"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowDialog(false);
+                        setShowEditBtn(false);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       )}
+
+      {/* {showDialog && (
+        <div className="dialogOverlay">
+          <div
+            className="dialog"
+          >
+            <h1>Add New Contact</h1>
+            <div className="inputGroup">
+              {inputs.map((i, ind) => (
+                
+                  <input
+                    key={ind}
+                    name={i.name}
+                    value={contact[i.name]}
+                    type={i.type}
+                    placeholder={i.placeholder}
+                    onChange={change}
+                  />
+                
+              ))}
+            </div>
+            {!showEditBtn && (
+              <button type="submit" onClick={add}>
+                Add Contact
+              </button>
+            )}
+            <button onClick={() => setShowDialog(false)}>cancel</button>
+            {showEditBtn && <button onClick={applyEdit}>Edit</button>}
+          </div>
+        </div>
+      )} */}
       {askDelete && (
         <div className="dialogOverlay1">
           <div className="dialog1">
